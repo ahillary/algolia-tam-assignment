@@ -6,7 +6,8 @@
     "start": "parcel index.html --port 3000",
     "build": "parcel build index.html",
     "lint": "eslint .",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "seed": "node seed.js"
   },
   "devDependencies": {
     "babel-eslint": "10.0.2",
@@ -20,6 +21,7 @@
   },
   "dependencies": {
     "algoliasearch": "^3.35.1",
+    "dotenv": "^8.2.0",
     "instantsearch.js": "^4.0.0"
   }
 }
