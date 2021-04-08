@@ -87,3 +87,6 @@ Open http://localhost:3000 to see your app.
 | Technical aptitude | | |
 | UX | | |
 | Communication skills | | | |
+
+I choose to put the suggested autocompletes immediately below the search box because I thought it looks better than a column on the left titled Suggestions.
+<img width="1664" alt="Screen Shot 2021-04-08 at 4 48 00 PM" src="https://user-images.githubusercontent.com/51545396/114100741-5db53e80-988a-11eb-9066-471d6e34fd1a.png">
