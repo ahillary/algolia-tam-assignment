@@ -2,10 +2,14 @@ import algoliasearch from 'algoliasearch';
 import instantsearch from 'instantsearch.js';
 
 // Instant Search Widgets
-import { hits, searchBox, configure } from 'instantsearch.js/es/widgets';
+import { configure, hits, index, searchBox } from 'instantsearch.js/es/widgets';
 
 // Autocomplete Template
 import autocompleteProductTemplate from '../templates/autocomplete-product';
+import {
+  connectHits,
+  connectRefinementList,
+} from 'instantsearch.js/es/connectors';
 
 /**
  * @class Autocomplete
@@ -29,7 +33,7 @@ class Autocomplete {
   _registerClient() {
     this._searchClient = algoliasearch(
       'L5U38G4GCH',
-      'a79c0306487109f0634b58e10efa37a0'
+      'f13830a1a7420fd39ccd46fd957b303d'
     );
 
     this._searchInstance = instantsearch({
@@ -44,16 +48,80 @@ class Autocomplete {
    * @return {void}
    */
   _registerWidgets() {
+    // Customize UI of the Query Suggestion Hits
+    const renderQSHits = ({ widgetParams, hits }, isFirstRender) => {
+      const container = document.querySelector(widgetParams.container);
+      container.innerHTML = `<ul>
+        ${hits
+          .map(
+            item =>
+              `<li>${instantsearch.highlight({
+                hit: item,
+                attribute: 'query',
+              })}</li>`
+          )
+          .join('')}
+      </ul>`;
+    };
+
+    const QSHits = connectHits(renderQSHits);
+
+    // Customize UI of the category column
+    const renderFederatedRefinement = (
+      { widgetParams, items },
+      isFirstRender
+    ) => {
+      const container = document.querySelector(widgetParams.container);
+      container.innerHTML = `<ul>
+        ${items.map(item => `<li>${item.label}</li>`).join('')}
+      </ul>`;
+    };
+
+    const federatedRefinement = connectRefinementList(
+      renderFederatedRefinement
+    );
+
+    // Add the widgets
     this._searchInstance.addWidgets([
-      configure({
-        hitsPerPage: 4,
-      }),
       searchBox({
         container: '#searchbox',
+        placeholder: 'Search for items',
+        showReset: true,
+        showSubmit: true,
+        showLoadingIndicator: true,
       }),
-      hits({
-        container: '#autocomplete-hits',
-        templates: { item: autocompleteProductTemplate },
+      index({
+        indexName: 'SpencerWilliams',
+        indexId: this._searchClient,
+      }).addWidgets([
+        configure({
+          hitsPerPage: 3,
+        }),
+        hits({
+          container: '#autocomplete-hits',
+          templates: {
+            item: autocompleteProductTemplate,
+          },
+        }),
+      ]),
+
+      // the suggested made using Algolia dashboard after uploading Spencer & Williams data
+      index({
+        indexName: 'SpencerWilliamsSearchSuggestions',
+      }).addWidgets([
+        configure({
+          hitsPerPage: 7,
+        }),
+        QSHits({
+          container: '#suggestions',
+        }),
+      ]),
+
+      // categories was not asked for from Spencer and Williams, but left as an additional feature unless they request it removed
+      federatedRefinement({
+        attribute: 'categories',
+        container: '#categories',
+        limit: 5,
       }),
     ]);
   }
