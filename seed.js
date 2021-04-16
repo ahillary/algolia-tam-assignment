@@ -11,7 +11,7 @@ const content = fs.readFileSync('./data/products.json', 'utf8', (err, data) => {
   return data;
 });
 
-// update the data stored in variable 'content', to a an array of objects
+// update the data stored in variable 'content', to an array of objects
 const dataset = JSON.parse(content);
 
 // each object in the array will be assigned to the body key within a new object, preparing this information to be sent to Algolia to create a new Index titled 'SpencerWilliams'
