@@ -105,7 +105,7 @@ class Autocomplete {
         }),
       ]),
 
-      // the suggested made using Algolia dashboard after uploading Spencer & Williams data
+      // the search suggestions made using Algolia dashboard after uploading Spencer & Williams data
       index({
         indexName: 'SpencerWilliamsSearchSuggestions',
       }).addWidgets([
